@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+
 const Table = (props: {}) => {
   return (
     <table>
@@ -12,8 +13,16 @@ const Table = (props: {}) => {
       </thead>
       <tbody>
       <tr>
-        <td>Test Task</td>
+        <td>Task A</td>
         <td>Jim, Bill</td>
+      </tr>
+      <tr>
+        <td>Task B</td>
+        <td>Jill, Bill</td>
+      </tr>
+      <tr>
+        <td>Task C</td>
+        <td>Jill, Bill</td>
       </tr>
       </tbody>
     </table>

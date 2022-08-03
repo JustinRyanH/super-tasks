@@ -1,5 +1,5 @@
 import React from "react";
-import * as Server from 'react-dom/server'
+import ReactDOM from "react-dom";
 
 const App = (props: { message: string }) => {
     const [count, setCount] = React.useState(0);

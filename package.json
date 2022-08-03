@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js"
+    "build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
+    "watch": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js --watch"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+const TaskRow = (props: { title: String, assignees: Array<String> }) => {
+
+  return (<tr>
+    <td>{props.title}</td>
+    <td>{props.assignees.join(', ')}</td>
+  </tr>)
+}
 
 const Table = (props: {}) => {
   return (
@@ -12,18 +19,9 @@ const Table = (props: {}) => {
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>Task A</td>
-        <td>Jim, Bill</td>
-      </tr>
-      <tr>
-        <td>Task B</td>
-        <td>Jill, Bill</td>
-      </tr>
-      <tr>
-        <td>Task C</td>
-        <td>Jill, Bill</td>
-      </tr>
+        <TaskRow title="Task A" assignees={['Jim', 'Bill', 'Sal']} />
+        <TaskRow title="Task B" assignees={['Jill', 'Bill']} />
+        <TaskRow title="Task C" assignees={['Jill', 'Jim']} />
       </tbody>
     </table>
   )

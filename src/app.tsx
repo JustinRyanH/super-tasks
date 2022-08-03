@@ -1,16 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-const App = (props: { message: string }) => {
-    const [count, setCount] = React.useState(0);
-    const increment = React.useCallback(() => {
-        setCount(count => count + 1);
-    }, [count]);
-    return(<>
-        <h1>{props.message}</h1>
-        <h2>Count: {count}</h2>
-        <button onClick={increment}>Increment</button>
-    </>)
+const Table = (props: {}) => {
+  return (
+    <table>
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Assignees</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Test Task</td>
+        <td>Jim, Bill</td>
+      </tr>
+      </tbody>
+    </table>
+  )
+}
+
+const App = (props: {}) => {
+  return (<>
+    <Table/>
+  </>)
 };
 
-ReactDOM.render(<App message="Hello World" />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));

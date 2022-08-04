@@ -1,8 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-const TaskRow = (props: { title: String, assignees: Array<String> }) => {
+class SingleValueObserver<T> {
+  private _value: T;
 
+  constructor(initialValue: T) {
+    this._value = initialValue;
+  }
+
+  get value() { return this._value; }
+
+  updateValue(newValue: T): void {
+    this._value = newValue;
+  }
+}
+
+const TaskRow = (props: { title: String, assignees: Array<String> }) => {
   return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">
     <td className="p-2">{props.title}</td>
     <td className="p-2">{props.assignees.join(', ')}</td>

@@ -1,4 +1,4 @@
-import { SingleValueObserver } from "./observer";
+import { SingleValueObserver } from "tools/observer";
 
 interface TaskProps {
   title: string,

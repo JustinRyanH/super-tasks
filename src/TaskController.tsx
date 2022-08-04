@@ -1,4 +1,4 @@
-import { Task } from "./task";
+import { Task } from "task";
 
 export const ALL_TASKS = [
   new Task({ title: "Task A", assignees: ['Jim', 'Bill', 'Sal'] }),

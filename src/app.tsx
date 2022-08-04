@@ -3,17 +3,17 @@ import ReactDOM from "react-dom";
 
 const TaskRow = (props: { title: String, assignees: Array<String> }) => {
 
-  return (<tr>
-    <td>{props.title}</td>
-    <td>{props.assignees.join(', ')}</td>
+  return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">
+    <td className="p-2">{props.title}</td>
+    <td className="p-2">{props.assignees.join(', ')}</td>
   </tr>)
 }
 
 const Table = (props: {}) => {
   return (
-    <table>
+    <table className="table-auto bg-slate-300">
       <thead>
-      <tr>
+      <tr className="bg-slate-600 text-slate-100">
         <th>Title</th>
         <th>Assignees</th>
       </tr>
@@ -29,7 +29,9 @@ const Table = (props: {}) => {
 
 const App = (props: {}) => {
   return (<>
-    <Table/>
+    <div className="w-full flex justify-center">
+      <Table/>
+    </div>
   </>)
 };
 

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
-    "watch": "npm run build -- --watch",
-    "serve": "npm run build -- --servedir=public"
+    "js:build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
+    "js:watch": "npm run build -- --watch",
+    "js:serve": "npm run build -- --servedir=public"
   },
   "keywords": [],
   "author": "",

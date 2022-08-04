@@ -8,12 +8,12 @@ interface TaskProps {
 }
 
 class Task {
-  #id: string;
+  readonly id: string;
   #title: SingleValueObserver<string>;
   #assignees: SingleValueObserver<string[]>;
 
   constructor({ title = "New Task", assignees = [] }: TaskProps) {
-    this.#id = Math.random().toString();
+    this.id = Math.random().toString();
     this.#title = new SingleValueObserver(title);
     this.#assignees = new SingleValueObserver(assignees);
   }
@@ -24,10 +24,6 @@ class Task {
 
   get assignees() {
     return this.#assignees.value;
-  }
-
-  get id() {
-    return this.#id;
   }
 }
 

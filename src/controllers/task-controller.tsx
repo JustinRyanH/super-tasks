@@ -1,4 +1,5 @@
 import { Task } from "models/task";
+import { SingleValueObserver } from "tools/observer";
 
 export const ALL_TASKS = [
   new Task({ title: "Task A", assignees: ['Jim', 'Bill', 'Sal'] }),
@@ -8,9 +9,13 @@ export const ALL_TASKS = [
 
 
 export class TaskController {
-  tasks: Task[];
+  #tasks: SingleValueObserver<Task[]>;
 
   constructor({ tasks = ALL_TASKS } = {}) {
-    this.tasks = tasks;
+    this.#tasks = new SingleValueObserver(tasks);
+  }
+
+  get tasks() {
+    return this.#tasks;
   }
 }

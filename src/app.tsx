@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
-import { TaskController } from "task-controller";
+import { TaskController } from "controllers/task-controller";
 
 
 interface App {

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useWatchObserver } from "tools/observer";
-import { Task } from "task";
+import { Task } from "models/task";
 import { TaskController } from "task-controller";
 
 

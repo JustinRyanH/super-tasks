@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "js:build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
-    "js:watch": "npm run build -- --watch",
-    "js:serve": "npm run build -- --servedir=public"
+    "js:watch": "npm run js:build -- --watch",
+    "js:serve": "npm run js:build -- --servedir=public",
+    "style:build": "tailwindcss -i ./src/style.css -o ./public/style.css --minify",
+    "style:watch": "npm run style:build -- --watch"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "esbuild": "^0.14.53",
+    "tailwindcss": "^3.1.7",
     "typescript": "^4.7.4"
   }
 }

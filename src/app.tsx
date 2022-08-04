@@ -4,6 +4,11 @@ import { SingleValueObserver, useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 
+const DEFAULT_COLUMNS = [
+  { id: 'title', name: 'Title' },
+  { id: 'assignees', name: 'Assignees' },
+];
+
 
 interface App {
   tasks: Task[],
@@ -34,7 +39,7 @@ window.taskController = window.taskController || new TaskController();
 
 
 const ColumnCell = ({ column }: { column: Column }) => {
-    return <td className="p-2">{column.name}</td>
+  return <td className="p-2">{column.name}</td>
 }
 
 const TaskRow = (props: { task: Task }) => {
@@ -50,12 +55,10 @@ const TaskRow = (props: { task: Task }) => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-  const columns = [
-    { id: 'title', name: 'Title' },
-    { id: 'assignees', name: 'Assignees' },
-  ];
-
+  const columnController = new ColumnController(DEFAULT_COLUMNS);
   const tasks = controller.tasks;
+
+  const columns = useWatchObserver(columnController.columns);
 
   return (
     <table className="table-auto bg-slate-300">

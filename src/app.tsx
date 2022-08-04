@@ -1,53 +1,56 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { SingleValueObserver } from "./observer";
+import { useWatchObserver } from "./observer";
+import { Task } from "./task";
 
-interface TaskProps {
-  title: string,
-  assignees: string[],
-}
 
-class Task {
-  readonly id: string;
-  #title: SingleValueObserver<string>;
-  #assignees: SingleValueObserver<string[]>;
+const ALL_TASKS = [
+  new Task({ title: "Task A", assignees: ['Jim', 'Bill', 'Sal'] }),
+  new Task({ title: "Task B", assignees: ['Jill', 'Bill'] }),
+  new Task({ title: "Task C", assignees: ['Jill', 'Jim'] }),
+];
 
-  constructor({ title = "New Task", assignees = [] }: TaskProps) {
-    this.id = Math.random().toString();
-    this.#title = new SingleValueObserver(title);
-    this.#assignees = new SingleValueObserver(assignees);
-  }
 
-  get title() {
-    return this.#title.value;
-  }
+class TaskController {
+  tasks: Task[];
 
-  get assignees() {
-    return this.#assignees.value;
+  constructor({ tasks = ALL_TASKS } = {}) {
+    this.tasks = tasks;
   }
 }
+
+interface App {
+  tasks: Task[],
+}
+
+declare global {
+  interface Window { taskController: TaskController }
+}
+
+window.taskController = window.taskController || new TaskController();
 
 const TaskRow = (props: { task: Task }) => {
   const task = props.task;
+
+  const title = useWatchObserver(task.title);
+  const assignees = useWatchObserver(task.assignees);
+
   return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">
-    <td className="p-2">{task.title}</td>
-    <td className="p-2">{task.assignees.join(', ')}</td>
+    <td className="p-2">{title}</td>
+    <td className="p-2">{assignees.join(', ')}</td>
   </tr>)
 }
 
-const Table = (props: {}) => {
-  const tasks = [
-    new Task({ title: "Task A", assignees: ['Jim', 'Bill', 'Sal']}),
-    new Task({ title: "Task B", assignees: ['Jill', 'Bill']}),
-    new Task({ title: "Task C", assignees: ['Jill', 'Jim']}),
-  ]
+const Table = ({ controller }: { controller: TaskController }) => {
+  const tasks = controller.tasks;
+
   return (
     <table className="table-auto bg-slate-300">
       <thead>
-      <tr className="bg-slate-600 text-slate-100">
-        <th>Title</th>
-        <th>Assignees</th>
-      </tr>
+        <tr className="bg-slate-600 text-slate-100">
+          <th>Title</th>
+          <th>Assignees</th>
+        </tr>
       </thead>
       <tbody>
         {tasks.map(task => <TaskRow key={task.id} task={task} />)}
@@ -59,9 +62,9 @@ const Table = (props: {}) => {
 const App = (props: {}) => {
   return (<>
     <div className="w-full flex justify-center">
-      <Table/>
+      <Table controller={window.taskController} />
     </div>
   </>)
 };
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

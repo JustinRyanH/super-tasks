@@ -8,7 +8,7 @@ interface TaskProps {
 }
 
 class Task {
-  #id: String;
+  #id: string;
   #title: SingleValueObserver<string>;
   #assignees: SingleValueObserver<string[]>;
 
@@ -54,9 +54,7 @@ const Table = (props: {}) => {
       </tr>
       </thead>
       <tbody>
-        <TaskRow task={tasks[0]} />
-        <TaskRow task={tasks[1]} />
-        <TaskRow task={tasks[2]} />
+        {tasks.map(task => <TaskRow key={task.id} task={task} />)}
       </tbody>
     </table>
   )

@@ -1,56 +1,50 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { SingleValueObserver } from "./observer";
 
-interface SimpleValueObject<T> {
-  value: T
-  updateValue(newValue: T): void;
+interface TaskProps {
+  title: string,
+  assignees: string[],
 }
 
-type ObserverCallback<T> = (observer: SimpleValueObject<T>, values?: { before?: T, after?: T }) => void;
+class Task {
+  #id: String;
+  #title: SingleValueObserver<string>;
+  #assignees: SingleValueObserver<string[]>;
 
-class SingleValueObserver<T> {
-  #value: T;
-  private observers: Array<ObserverCallback<T>> = [];
-
-  constructor(initialValue: T) {
-    this.#value = initialValue;
+  constructor({ title = "New Task", assignees = [] }: TaskProps) {
+    this.#id = Math.random().toString();
+    this.#title = new SingleValueObserver(title);
+    this.#assignees = new SingleValueObserver(assignees);
   }
 
-  get value() { return this.#value; }
-
-  updateValue(newValue: T): void {
-    const oldValue = this.#value;
-    this.#value = newValue;
-    this.observers.forEach(ob => ob(this, { before: oldValue, after: newValue }));
+  get title() {
+    return this.#title.value;
   }
 
-  observe(cb: ObserverCallback<T>): Function {
-    this.observers.push(cb);
-    return () => this.stopObserving(cb);
+  get assignees() {
+    return this.#assignees.value;
   }
 
-  stopObserving(cb: ObserverCallback<T>): void {
-    this.observers = this.observers.filter(callback => callback !== cb);
+  get id() {
+    return this.#id;
   }
 }
 
-function useWatchObserver<T>(observer: SingleValueObserver<T>): T {
-  const [value, setValue] = React.useState(observer.value);
-  React.useEffect(() => {
-    observer.observe(ob => setValue(ob.value));
-  }, [observer])
-  return value;
-}
-
-
-const TaskRow = (props: { title: String, assignees: Array<String> }) => {
+const TaskRow = (props: { task: Task }) => {
+  const task = props.task;
   return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">
-    <td className="p-2">{props.title}</td>
-    <td className="p-2">{props.assignees.join(', ')}</td>
+    <td className="p-2">{task.title}</td>
+    <td className="p-2">{task.assignees.join(', ')}</td>
   </tr>)
 }
 
 const Table = (props: {}) => {
+  const tasks = [
+    new Task({ title: "Task A", assignees: ['Jim', 'Bill', 'Sal']}),
+    new Task({ title: "Task B", assignees: ['Jill', 'Bill']}),
+    new Task({ title: "Task C", assignees: ['Jill', 'Jim']}),
+  ]
   return (
     <table className="table-auto bg-slate-300">
       <thead>
@@ -60,9 +54,9 @@ const Table = (props: {}) => {
       </tr>
       </thead>
       <tbody>
-        <TaskRow title="Task A" assignees={['Jim', 'Bill', 'Sal']} />
-        <TaskRow title="Task B" assignees={['Jill', 'Bill']} />
-        <TaskRow title="Task C" assignees={['Jill', 'Jim']} />
+        <TaskRow task={tasks[0]} />
+        <TaskRow task={tasks[1]} />
+        <TaskRow task={tasks[2]} />
       </tbody>
     </table>
   )

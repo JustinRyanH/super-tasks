@@ -16,8 +16,17 @@ declare global {
 
 window.taskController = window.taskController || new TaskController();
 
-const ColumnCell = ({ column }: { column: Column }) => {
-  return <td className="p-2">{column.name}</td>
+const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
+
+const Headers = () => {
+  const columnController = useColumnContext();
+  const columns = useWatchObserver(columnController.columns);
+
+      return (<thead>
+        <tr className="bg-slate-600 text-slate-100">
+          {columns.map(column => <ColumnCell key={column.id} column={column} />)}
+        </tr>
+      </thead>);
 }
 
 const TaskRow = (props: { task: Task }) => {
@@ -33,18 +42,11 @@ const TaskRow = (props: { task: Task }) => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-  const columnController = useColumnContext();
   const tasks = controller.tasks;
-
-  const columns = useWatchObserver(columnController.columns);
 
   return (
     <table className="table-auto bg-slate-300">
-      <thead>
-        <tr className="bg-slate-600 text-slate-100">
-          {columns.map(column => <ColumnCell key={column.id} column={column} />)}
-        </tr>
-      </thead>
+      <Headers />
       <tbody>
         {tasks.map(task => <TaskRow key={task.id} task={task} />)}
       </tbody>

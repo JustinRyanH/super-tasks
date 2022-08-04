@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useWatchObserver } from "tools/observer";
+import { SingleValueObserver, useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 
@@ -13,7 +13,29 @@ declare global {
   interface Window { taskController: TaskController }
 }
 
+interface Column {
+  id: string,
+  name: string,
+}
+
+class ColumnController {
+  #columns: SingleValueObserver<Column[]>;
+
+  constructor(columns: Column[]) {
+    this.#columns = new SingleValueObserver(columns);
+  }
+
+  get columns() {
+    return this.#columns;
+  }
+}
+
 window.taskController = window.taskController || new TaskController();
+
+
+const ColumnCell = ({ column }: { column: Column }) => {
+    return <td className="p-2">{column.name}</td>
+}
 
 const TaskRow = (props: { task: Task }) => {
   const task = props.task;
@@ -28,14 +50,18 @@ const TaskRow = (props: { task: Task }) => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
+  const columns = [
+    { id: 'title', name: 'Title' },
+    { id: 'assignees', name: 'Assignees' },
+  ];
+
   const tasks = controller.tasks;
 
   return (
     <table className="table-auto bg-slate-300">
       <thead>
         <tr className="bg-slate-600 text-slate-100">
-          <th>Title</th>
-          <th>Assignees</th>
+          {columns.map(column => <ColumnCell key={column.id} column={column} />)}
         </tr>
       </thead>
       <tbody>

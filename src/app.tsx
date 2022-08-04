@@ -1,19 +1,37 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+interface SimpleValueObject<T> {
+  value: T
+  updateValue(newValue: T): void;
+}
+
+type ObserverCallback<T> = (observer: SimpleValueObject<T>, values?: { before?: T, after?: T }) => void;
+
 class SingleValueObserver<T> {
-  private _value: T;
+  #value: T;
+  private subscriptions: Array<ObserverCallback<T>> = [];
 
   constructor(initialValue: T) {
-    this._value = initialValue;
+    this.#value = initialValue;
   }
 
-  get value() { return this._value; }
+  get value() { return this.#value; }
 
   updateValue(newValue: T): void {
-    this._value = newValue;
+    this.#value = newValue;
+  }
+
+  observe(cb: ObserverCallback<T>): Function {
+    this.subscriptions.push(cb);
+    return () => this.stopObserving(cb);
+  }
+
+  stopObserving(cb: ObserverCallback<T>): void {
+    this.subscriptions = this.subscriptions.filter(callback => callback !== cb);
   }
 }
+
 
 const TaskRow = (props: { title: String, assignees: Array<String> }) => {
   return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">

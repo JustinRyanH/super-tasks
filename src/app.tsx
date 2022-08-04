@@ -5,6 +5,7 @@ import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider, useColumnContext } from "components/column-provider";
+import { MultiStringCell, StringCell } from "components/cells";
 
 interface App {
   tasks: Task[],
@@ -32,12 +33,9 @@ const Headers = () => {
 const TaskRow = (props: { task: Task }) => {
   const task = props.task;
 
-  const title = useWatchObserver(task.title);
-  const assignees = useWatchObserver(task.assignees);
-
   return (<tr className="odd:bg-slate-300 even:bg-slate-200 shadow-inner">
-    <td className="p-2">{title}</td>
-    <td className="p-2">{assignees.join(', ')}</td>
+    <StringCell observer={task.title} />
+    <MultiStringCell observer={task.assignees} />
   </tr>)
 }
 

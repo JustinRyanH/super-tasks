@@ -1,14 +1,24 @@
-import React from "react";
 import { SingleValueObserver } from "tools/observer";
 
+
+type ColumnId = 'title' | 'assignees';
+
+const TITLE_COLUMN = {
+  id: 'title',
+  name: 'Title',
+};
+const ASSIGNEES_COLUMN = {
+  id: 'assignees',
+  name: 'Assignees',
+};
+
 export const DEFAULT_COLUMNS = [
-  { id: 'title', name: 'Title' },
-  { id: 'assignees', name: 'Assignees' },
+  TITLE_COLUMN,
+  ASSIGNEES_COLUMN,
 ];
 
-
 export interface Column {
-  id: string,
+  id: ColumnId,
   name: string,
 }
 

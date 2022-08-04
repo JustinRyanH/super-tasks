@@ -10,7 +10,7 @@ type ObserverCallback<T> = (observer: SimpleValueObject<T>, values?: { before?: 
 
 class SingleValueObserver<T> {
   #value: T;
-  private subscriptions: Array<ObserverCallback<T>> = [];
+  private observers: Array<ObserverCallback<T>> = [];
 
   constructor(initialValue: T) {
     this.#value = initialValue;
@@ -19,17 +19,27 @@ class SingleValueObserver<T> {
   get value() { return this.#value; }
 
   updateValue(newValue: T): void {
+    const oldValue = this.#value;
     this.#value = newValue;
+    this.observers.forEach(ob => ob(this, { before: oldValue, after: newValue }));
   }
 
   observe(cb: ObserverCallback<T>): Function {
-    this.subscriptions.push(cb);
+    this.observers.push(cb);
     return () => this.stopObserving(cb);
   }
 
   stopObserving(cb: ObserverCallback<T>): void {
-    this.subscriptions = this.subscriptions.filter(callback => callback !== cb);
+    this.observers = this.observers.filter(callback => callback !== cb);
   }
+}
+
+function useWatchObserver<T>(observer: SingleValueObserver<T>): T {
+  const [value, setValue] = React.useState(observer.value);
+  React.useEffect(() => {
+    observer.observe(ob => setValue(ob.value));
+  }, [observer])
+  return value;
 }
 
 

@@ -1,14 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { SingleValueObserver, useWatchObserver } from "tools/observer";
+import { useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
-
-const DEFAULT_COLUMNS = [
-  { id: 'title', name: 'Title' },
-  { id: 'assignees', name: 'Assignees' },
-];
-
+import { Column, ColumnController, DEFAULT_COLUMNS } from "./column-controller";
 
 interface App {
   tasks: Task[],
@@ -16,23 +11,6 @@ interface App {
 
 declare global {
   interface Window { taskController: TaskController }
-}
-
-interface Column {
-  id: string,
-  name: string,
-}
-
-class ColumnController {
-  #columns: SingleValueObserver<Column[]>;
-
-  constructor(columns: Column[]) {
-    this.#columns = new SingleValueObserver(columns);
-  }
-
-  get columns() {
-    return this.#columns;
-  }
 }
 
 window.taskController = window.taskController || new TaskController();

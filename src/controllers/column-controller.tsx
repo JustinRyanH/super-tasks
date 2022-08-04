@@ -3,11 +3,11 @@ import { SingleValueObserver } from "tools/observer";
 
 type ColumnId = 'title' | 'assignees';
 
-const TITLE_COLUMN = {
+const TITLE_COLUMN: Column = {
   id: 'title',
   name: 'Title',
 };
-const ASSIGNEES_COLUMN = {
+const ASSIGNEES_COLUMN: Column = {
   id: 'assignees',
   name: 'Assignees',
 };

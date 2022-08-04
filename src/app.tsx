@@ -5,6 +5,7 @@ import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider, useColumnContext } from "components/column-provider";
+import { MultiStringCell, StringCell } from "components/cells";
 
 interface App {
   tasks: Task[],

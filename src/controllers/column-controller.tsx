@@ -1,3 +1,4 @@
+import React from "react";
 import { SingleValueObserver } from "tools/observer";
 
 export const DEFAULT_COLUMNS = [

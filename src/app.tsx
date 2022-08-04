@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import { useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
-import { Column, ColumnController, DEFAULT_COLUMNS } from "./column-controller";
+import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
+import { ColumnProvider, useColumnContext } from "components/column-provider";
 
 interface App {
   tasks: Task[],
@@ -14,7 +15,6 @@ declare global {
 }
 
 window.taskController = window.taskController || new TaskController();
-
 
 const ColumnCell = ({ column }: { column: Column }) => {
   return <td className="p-2">{column.name}</td>
@@ -33,7 +33,7 @@ const TaskRow = (props: { task: Task }) => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-  const columnController = new ColumnController(DEFAULT_COLUMNS);
+  const columnController = useColumnContext();
   const tasks = controller.tasks;
 
   const columns = useWatchObserver(columnController.columns);
@@ -53,9 +53,12 @@ const Table = ({ controller }: { controller: TaskController }) => {
 }
 
 const App = (props: {}) => {
+  const columnController = new ColumnController(DEFAULT_COLUMNS);
   return (<>
     <div className="w-full flex justify-center">
-      <Table controller={window.taskController} />
+      <ColumnProvider controller={columnController}>
+        <Table controller={window.taskController} />
+      </ColumnProvider>
     </div>
   </>)
 };

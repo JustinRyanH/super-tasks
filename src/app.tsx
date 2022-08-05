@@ -1,6 +1,6 @@
 import React, { Ref } from "react";
 import ReactDOM from "react-dom";
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
 import { SingleValueObserver, useWatchObserver } from "tools/observer";
@@ -21,11 +21,15 @@ declare global {
 
 window.taskController = window.taskController || new TaskController();
 
+function useColumns() {
+  const columnController = useColumnContext();
+  return useWatchObserver(columnController.columns);
+}
+
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
 const Headers = () => {
-  const columnController = useColumnContext();
-  const columns = useWatchObserver(columnController.columns);
+  const columns = useColumns();
 
   return (<thead>
     <tr className="bg-slate-600 text-slate-100">
@@ -54,6 +58,7 @@ const DraggableRow = (props: { task: Task }) => {
     transform,
     transition,
     index,
+    isDragging,
   } = useSortable({ id: task.id });
 
   const style = {
@@ -65,18 +70,23 @@ const DraggableRow = (props: { task: Task }) => {
   const columnController = useColumnContext();
   const columns = useWatchObserver(columnController.columns);
 
+  const classNameNotDragging = "odd:bg-slate-300 even:bg-slate-200 shadow-inner";
+  const classNameDragging = "bg-slate-100 text-slate-200"
+
   return (<Row
     ref={setNodeRef}
     task={task}
     columns={columns}
     style={style}
-    className="odd:bg-slate-300 even:bg-slate-200 shadow-inner"
+    className={isDragging ? classNameDragging : classNameNotDragging}
     {...attributes}
     {...listeners}
   />);
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
+  const columns = useColumns();
+  const [activeId, setActiveId] = React.useState(null);
   const tasks = useWatchObserver(controller.tasks);
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -89,12 +99,19 @@ const Table = ({ controller }: { controller: TaskController }) => {
 
       controller.tasks.updateValue(arrayMove(tasks, oldIndex, newIndex));
     }
+    setActiveId(null);
+  }
+
+  function handleDragStart(event: { active: any; }) {
+    const { active } = event;
+    setActiveId(active.id);
   }
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
       <table className="table-auto bg-slate-300">
@@ -105,6 +122,9 @@ const Table = ({ controller }: { controller: TaskController }) => {
           </SortableContext>
         </tbody>
       </table>
+      <DragOverlay>
+        {activeId ? <Row className="bg-slate-300 shadow-outer" task={tasks.find(task => task.id === activeId)} columns={columns} /> : null}
+      </DragOverlay>
     </DndContext>
   )
 }

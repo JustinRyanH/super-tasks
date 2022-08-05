@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Ref } from "react";
 import ReactDOM from "react-dom";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
-import { useWatchObserver } from "tools/observer";
+import { SingleValueObserver, useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
@@ -34,6 +34,16 @@ const Headers = () => {
   </thead>);
 }
 
+interface RowPropTypes {
+  task: Task,
+  columns: Column[],
+  [x: string]: any,
+}
+
+const Row = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
+  const { task, columns, ...rest } = props;
+  return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id]))}</tr>)
+});
 
 const DraggableRow = (props: { task: Task }) => {
   const task = props.task;
@@ -55,15 +65,15 @@ const DraggableRow = (props: { task: Task }) => {
   const columnController = useColumnContext();
   const columns = useWatchObserver(columnController.columns);
 
-  return (<tr
+  return (<Row
     ref={setNodeRef}
+    task={task}
+    columns={columns}
     style={style}
     className="odd:bg-slate-300 even:bg-slate-200 shadow-inner"
     {...attributes}
     {...listeners}
-  >
-    {columns.map(column => mapValueToCell(task[column.id]))}
-  </tr>)
+  />);
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {

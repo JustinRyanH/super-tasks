@@ -35,7 +35,7 @@ const Headers = () => {
 }
 
 
-const TaskRow = (props: { task: Task }) => {
+const DraggableRow = (props: { task: Task }) => {
   const task = props.task;
   const {
     attributes,
@@ -91,7 +91,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
         <Headers />
         <tbody>
           <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
-            {tasks.map(task => <TaskRow key={task.id} task={task} />)}
+            {tasks.map(task => <DraggableRow key={task.id} task={task} />)}
           </SortableContext>
         </tbody>
       </table>

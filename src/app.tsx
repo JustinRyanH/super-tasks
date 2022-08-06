@@ -11,7 +11,7 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import { DraggableRow, Row } from "./components/row";
 import { useColumns } from "./hooks";
 import { Task, UniqueIdType } from "models/task";
-import { TaskControllerProvider } from "components/task-controller-provider";
+import { TaskControllerProvider, useTaskController } from "components/task-controller-provider";
 
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
@@ -62,7 +62,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            <DraggedTaskOverlay activeId={activeTask?.id} tasks={tasks} />
+            <DraggedTaskOverlay activeId={activeTask?.id} />
         </DndContext>
     )
 }
@@ -80,13 +80,11 @@ const App = (props: { controller: TaskController }) => {
     </>)
 }; ReactDOM.render(<App controller={new TaskController()} />, document.getElementById('root'));
 
-interface TaskOverloadProps {
-    activeId?: UniqueIdType;
-    tasks: Task[];
-}
-
-function DraggedTaskOverlay({ activeId, tasks }: TaskOverloadProps): JSX.Element {
+function DraggedTaskOverlay({ activeId }: { activeId?: UniqueIdType }): JSX.Element {
     const columns = useColumns();
+    const taskController = useTaskController();
+    const tasks = useWatchObserver(taskController.tasks);
+
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}
             columns={columns} /> : null}

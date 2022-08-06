@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "js:build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
-    "js:watch": "npm run js:build -- --watch",
-    "js:serve": "NODE_ENV=development npm run js:build -- --servedir=public",
+    "js:watch": "npm run js:build -- --sourcemap --watch",
+    "js:serve": "NODE_ENV=development npm run js:build -- --sourcemap --servedir=public",
     "style:build": "tailwindcss -i ./src/style.css -o ./public/style.css --minify",
     "style:watch": "npm run style:build -- --watch"
   },

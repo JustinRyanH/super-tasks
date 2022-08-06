@@ -62,7 +62,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            <DraggedTaskOverlay activeId={activeTask?.id} />
+            <DraggedTaskOverlay />
         </DndContext>
     )
 }
@@ -80,13 +80,12 @@ const App = (props: { controller: TaskController }) => {
     </>)
 }; ReactDOM.render(<App controller={new TaskController()} />, document.getElementById('root'));
 
-function DraggedTaskOverlay({ activeId }: { activeId?: UniqueIdType }): JSX.Element {
+function DraggedTaskOverlay({ }): JSX.Element {
     const columns = useColumns();
     const taskController = useTaskController();
-    const tasks = useWatchObserver(taskController.tasks);
+    const activeTask = useWatchObserver(taskController.activeTask);
 
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}
-            columns={columns} /> : null}
+        {activeTask ? <Row className="bg-slate-300 shadow-lg" task={activeTask} columns={columns} /> : null}
     </DragOverlay>;
 }

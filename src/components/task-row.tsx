@@ -7,16 +7,16 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useColumnContext } from "./column-provider";
 import { useWatchObserver } from "../tools/observer";
+import { useColumns } from "hooks";
 
 interface RowPropTypes {
     task: Task,
-    columns: Column[],
-
     [x: string]: any,
 }
 
-export const Row = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
-    const { task, columns, ...rest } = props;
+export const TaskRow = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
+    const { task, ...rest } = props;
+    const columns = useColumns();
     return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id], column.id))}</tr>)
 });
 export const DraggableRow = (props: { task: Task }) => {
@@ -43,7 +43,7 @@ export const DraggableRow = (props: { task: Task }) => {
     const classNameNotDragging = "odd:bg-slate-300 even:bg-slate-200 shadow-inner";
     const classNameDragging = "bg-slate-100 text-slate-200"
 
-    return (<Row
+    return (<TaskRow
         ref={setNodeRef}
         task={task}
         columns={columns}

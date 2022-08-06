@@ -13,6 +13,6 @@ export function DraggedTaskOverlay({ }): JSX.Element {
     const activelyDraggedTask = useWatchObserver(taskController.taskBeingReordered);
 
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activelyDraggedTask ? <Row className="bg-slate-300 shadow-lg" task={activelyDraggedTask} columns={columns} /> : null}
+        {activelyDraggedTask ? <table><tbody><Row className="bg-slate-300 shadow-lg" task={activelyDraggedTask} columns={columns} /></tbody></table> : null}
     </DragOverlay>;
 }

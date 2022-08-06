@@ -25,13 +25,13 @@ const Headers = () => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-    const activeTask = useWatchObserver(controller.taskBeingReordered);
     const tasks = useWatchObserver(controller.tasks);
-    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 100, tolerance: 10 } }));
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 75, tolerance: 10 } }));
 
     function handleDragEnd(event: { active: any; over: any; }) {
         const { active, over } = event;
 
+        if (!over) return;
         if (active.id !== over.id) {
             const oldIndex = tasks.findIndex(task => task.id === active.id);
             const newIndex = tasks.findIndex(task => task.id === over.id);

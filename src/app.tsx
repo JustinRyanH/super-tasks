@@ -61,7 +61,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            {newFunction(activeId, tasks, columns)}
+            {TaskOverlaw(activeId, tasks, columns)}
         </DndContext>
     )
 }
@@ -77,7 +77,7 @@ const App = (props: { controller: TaskController }) => {
     </>)
 }; ReactDOM.render(<App controller={new TaskController()} />, document.getElementById('root'));
 
-function newFunction(activeId: null, tasks: import("/mnt/Work/JS/super-tasks/src/models/task").Task[], columns: Column[]) {
+function TaskOverlaw(activeId: null, tasks: import("/mnt/Work/JS/super-tasks/src/models/task").Task[], columns: Column[]) {
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}
             columns={columns} /> : null}

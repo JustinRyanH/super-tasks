@@ -16,8 +16,8 @@ interface RowPropTypes {
 }
 
 export const Row = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
-    const {task, columns, ...rest} = props;
-    return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id]))}</tr>)
+    const { task, columns, ...rest } = props;
+    return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id], column.id))}</tr>)
 });
 export const DraggableRow = (props: { task: Task }) => {
     const task = props.task;
@@ -29,7 +29,7 @@ export const DraggableRow = (props: { task: Task }) => {
         transition,
         index,
         isDragging,
-    } = useSortable({id: task.id});
+    } = useSortable({ id: task.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),

@@ -25,7 +25,6 @@ const Headers = () => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-    const columns = useColumns();
     const activeTask = useWatchObserver(controller.activeTask);
     const tasks = useWatchObserver(controller.tasks);
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 100, tolerance: 10 } }));
@@ -62,7 +61,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            <TaskOverload activeId={activeTask?.id} tasks={tasks} />
+            <DraggedTaskOverlay activeId={activeTask?.id} tasks={tasks} />
         </DndContext>
     )
 }
@@ -83,7 +82,7 @@ interface TaskOverloadProps {
     tasks: Task[];
 }
 
-function TaskOverload({ activeId, tasks }: TaskOverloadProps): JSX.Element {
+function DraggedTaskOverlay({ activeId, tasks }: TaskOverloadProps): JSX.Element {
     const columns = useColumns();
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}

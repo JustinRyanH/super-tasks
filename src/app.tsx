@@ -26,7 +26,7 @@ const Headers = () => {
 }
 
 const Table = ({ controller }: { controller: TaskController }) => {
-    const activeTask = useWatchObserver(controller.activeTask);
+    const activeTask = useWatchObserver(controller.taskBeingReordered);
     const tasks = useWatchObserver(controller.tasks);
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 100, tolerance: 10 } }));
 
@@ -83,9 +83,9 @@ const App = (props: { controller: TaskController }) => {
 function DraggedTaskOverlay({ }): JSX.Element {
     const columns = useColumns();
     const taskController = useTaskController();
-    const activeTask = useWatchObserver(taskController.activeTask);
+    const activelyDraggedTask = useWatchObserver(taskController.taskBeingReordered);
 
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activeTask ? <Row className="bg-slate-300 shadow-lg" task={activeTask} columns={columns} /> : null}
+        {activelyDraggedTask ? <Row className="bg-slate-300 shadow-lg" task={activelyDraggedTask} columns={columns} /> : null}
     </DragOverlay>;
 }

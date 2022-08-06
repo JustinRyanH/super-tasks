@@ -10,7 +10,7 @@ export const ALL_TASKS = [
 type MaybeTask = Task | null
 
 export class TaskController {
-  #activeTask = new SingleValueObserver<MaybeTask>(null);
+  #taskBeingReordered = new SingleValueObserver<MaybeTask>(null);
   #tasks: SingleValueObserver<Task[]>;
 
   constructor({ tasks = ALL_TASKS } = {}) {
@@ -21,16 +21,16 @@ export class TaskController {
     return this.#tasks;
   }
 
-  get activeTask() {
-    return this.#activeTask;
+  get taskBeingReordered() {
+    return this.#taskBeingReordered;
   }
 
   setActiveTask(id: UniqueIdType) {
     const task = this.tasks.value.find(task => task.id === id) || null;
-    this.#activeTask.updateValue(task);
+    this.#taskBeingReordered.updateValue(task);
   }
 
   clearActiveTask() {
-    this.#activeTask.updateValue(null);
+    this.#taskBeingReordered.updateValue(null);
   }
 }

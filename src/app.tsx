@@ -62,7 +62,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            <TaskOverload activeId={activeTask?.id} tasks={tasks} columns={columns} />
+            <TaskOverload activeId={activeTask?.id} tasks={tasks} />
         </DndContext>
     )
 }
@@ -81,10 +81,10 @@ const App = (props: { controller: TaskController }) => {
 interface TaskOverloadProps {
     activeId?: UniqueIdType;
     tasks: Task[];
-    columns: Column[];
 }
 
-function TaskOverload({ activeId, tasks, columns }: TaskOverloadProps): JSX.Element {
+function TaskOverload({ activeId, tasks }: TaskOverloadProps): JSX.Element {
+    const columns = useColumns();
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}
             columns={columns} /> : null}

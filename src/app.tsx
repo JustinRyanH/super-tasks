@@ -7,7 +7,7 @@ import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider } from "components/column-provider";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { DraggableRow } from "./components/row";
+import { DraggableRow } from "./components/task-row";
 import { useColumns } from "./hooks";
 import { TaskControllerProvider } from "components/task-controller-provider";
 import { DraggedTaskOverlay } from "./components/dragged-task-overlay";

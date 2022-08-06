@@ -5,7 +5,7 @@ import React from "react";
 import { useTaskController } from "components/task-controller-provider";
 import { useColumns } from "hooks";
 import { useWatchObserver } from "tools/observer";
-import { Row } from "./row";
+import { Row } from "./task-row";
 
 export function DraggedTaskOverlay({ }): JSX.Element {
     const columns = useColumns();

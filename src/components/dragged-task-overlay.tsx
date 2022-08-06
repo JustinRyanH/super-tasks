@@ -3,7 +3,6 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import React from "react";
 
 import { useTaskController } from "components/task-controller-provider";
-import { useColumns } from "hooks";
 import { useWatchObserver } from "tools/observer";
 import { TaskRow } from "./task-row";
 
@@ -12,6 +11,6 @@ export function DraggedTaskOverlay({ }): JSX.Element {
     const activelyDraggedTask = useWatchObserver(taskController.taskBeingReordered);
 
     return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activelyDraggedTask ? <table><tbody><Row className="bg-slate-300 shadow-lg" task={activelyDraggedTask} columns={columns} /></table> : null}
+        {activelyDraggedTask ? <table><tbody><TaskRow className="bg-slate-300 shadow-lg" task={activelyDraggedTask} /></tbody></table> : null}
     </DragOverlay>;
 }

@@ -1,15 +1,16 @@
-import React, { Ref } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
-import { SingleValueObserver, useWatchObserver } from "tools/observer";
+import { useWatchObserver } from "tools/observer";
 import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider, useColumnContext } from "components/column-provider";
 import { mapValueToCell } from "components/cells";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { restrictToParentElement, restrictToVerticalAxis, restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 interface App {
   tasks: Task[],
@@ -88,7 +89,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
   const columns = useColumns();
   const [activeId, setActiveId] = React.useState(null);
   const tasks = useWatchObserver(controller.tasks);
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 75, tolerance: 10 } }));
 
   function handleDragEnd(event: { active: any; over: any; }) {
     const { active, over } = event;
@@ -122,7 +123,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
           </SortableContext>
         </tbody>
       </table>
-      <DragOverlay>
+      <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         {activeId ? <Row className="bg-slate-300 shadow-outer" task={tasks.find(task => task.id === activeId)} columns={columns} /> : null}
       </DragOverlay>
     </DndContext>

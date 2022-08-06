@@ -79,7 +79,7 @@ const App = (props: { controller: TaskController }) => {
 
 interface TaskOverloadProps {
     activeId: null;
-    tasks: import("/mnt/Work/JS/super-tasks/src/models/task").Task[];
+    tasks: Task[];
     columns: Column[];
 }
 

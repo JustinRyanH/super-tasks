@@ -19,6 +19,7 @@ const Headers = () => {
 
     return (<thead>
         <tr className="bg-slate-600 text-slate-100">
+            <td />
             {columns.map(column => <ColumnCell key={column.id} column={column} />)}
         </tr>
     </thead>);

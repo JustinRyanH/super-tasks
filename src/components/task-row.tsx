@@ -17,7 +17,10 @@ interface RowPropTypes {
 export const TaskRow = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
     const { task, ...rest } = props;
     const columns = useColumns();
-    return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id], column.id))}</tr>)
+    return (<tr ref={ref} {...rest}>
+        <td><button className="p-2"><i className="fa fa-bars"></i></button></td>
+        {columns.map(column => mapValueToCell(task[column.id], column.id))}
+    </tr>)
 });
 export const DraggableRow = (props: { task: Task }) => {
     const task = props.task;

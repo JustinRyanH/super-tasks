@@ -11,6 +11,7 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import { DraggableRow, Row } from "./components/row";
 import { useColumns } from "./hooks";
 import { Task, UniqueIdType } from "models/task";
+import { TaskControllerProvider } from "components/task-controller-provider";
 
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
@@ -71,7 +72,9 @@ const App = (props: { controller: TaskController }) => {
     return (<>
         <div className="w-full flex justify-center">
             <ColumnProvider controller={columnController}>
-                <Table controller={props.controller} />
+                <TaskControllerProvider controller={props.controller}>
+                    <Table controller={props.controller} />
+                </TaskControllerProvider>
             </ColumnProvider>
         </div>
     </>)

@@ -8,21 +8,9 @@ import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider, useColumnContext } from "components/column-provider";
-import { mapValueToCell } from "components/cells";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
-
-interface App {
-    tasks: Task[],
-}
-
-declare global {
-    interface Window {
-        taskController: TaskController
-    }
-}
-
-window.taskController = window.taskController || new TaskController();
+import { Row } from "./components/row";
 
 function useColumns() {
     const columnController = useColumnContext();
@@ -40,18 +28,6 @@ const Headers = () => {
     </tr>
     </thead>);
 }
-
-interface RowPropTypes {
-    task: Task,
-    columns: Column[],
-
-    [x: string]: any,
-}
-
-const Row = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
-    const {task, columns, ...rest} = props;
-    return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id]))}</tr>)
-});
 
 const DraggableRow = (props: { task: Task }) => {
     const task = props.task;
@@ -143,4 +119,4 @@ const App = (props: { controller: TaskController }) => {
             </ColumnProvider>
         </div>
     </>)
-}; ReactDOM.render(<App controller={window.taskController}/>, document.getElementById('root'));
+}; ReactDOM.render(<App controller={new TaskController()}/>, document.getElementById('root'));

@@ -10,6 +10,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { DraggableRow, Row } from "./components/row";
 import { useColumns } from "./hooks";
+import { Task } from "models/task";
 
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
@@ -61,7 +62,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            {TaskOverload({ activeId, tasks, columns })}
+            <TaskOverload activeId={activeId} tasks={tasks} columns={columns} />
         </DndContext>
     )
 }

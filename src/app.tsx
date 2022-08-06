@@ -10,135 +10,137 @@ import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-co
 import { ColumnProvider, useColumnContext } from "components/column-provider";
 import { mapValueToCell } from "components/cells";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { restrictToParentElement, restrictToVerticalAxis, restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 interface App {
-  tasks: Task[],
+    tasks: Task[],
 }
 
 declare global {
-  interface Window { taskController: TaskController }
+    interface Window {
+        taskController: TaskController
+    }
 }
 
 window.taskController = window.taskController || new TaskController();
 
 function useColumns() {
-  const columnController = useColumnContext();
-  return useWatchObserver(columnController.columns);
+    const columnController = useColumnContext();
+    return useWatchObserver(columnController.columns);
 }
 
-const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
+const ColumnCell = ({column}: { column: Column }) => <td className="p-2">{column.name}</td>
 
 const Headers = () => {
-  const columns = useColumns();
+    const columns = useColumns();
 
-  return (<thead>
+    return (<thead>
     <tr className="bg-slate-600 text-slate-100">
-      {columns.map(column => <ColumnCell key={column.id} column={column} />)}
+        {columns.map(column => <ColumnCell key={column.id} column={column}/>)}
     </tr>
-  </thead>);
+    </thead>);
 }
 
 interface RowPropTypes {
-  task: Task,
-  columns: Column[],
-  [x: string]: any,
+    task: Task,
+    columns: Column[],
+
+    [x: string]: any,
 }
 
 const Row = React.forwardRef<HTMLTableRowElement, RowPropTypes>((props, ref) => {
-  const { task, columns, ...rest } = props;
-  return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id]))}</tr>)
+    const {task, columns, ...rest} = props;
+    return (<tr ref={ref} {...rest}>{columns.map(column => mapValueToCell(task[column.id]))}</tr>)
 });
 
 const DraggableRow = (props: { task: Task }) => {
-  const task = props.task;
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    index,
-    isDragging,
-  } = useSortable({ id: task.id });
+    const task = props.task;
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        index,
+        isDragging,
+    } = useSortable({id: task.id});
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    '--index': index,
-  };
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        '--index': index,
+    };
 
-  const columnController = useColumnContext();
-  const columns = useWatchObserver(columnController.columns);
+    const columnController = useColumnContext();
+    const columns = useWatchObserver(columnController.columns);
 
-  const classNameNotDragging = "odd:bg-slate-300 even:bg-slate-200 shadow-inner";
-  const classNameDragging = "bg-slate-100 text-slate-200"
+    const classNameNotDragging = "odd:bg-slate-300 even:bg-slate-200 shadow-inner";
+    const classNameDragging = "bg-slate-100 text-slate-200"
 
-  return (<Row
-    ref={setNodeRef}
-    task={task}
-    columns={columns}
-    style={style}
-    className={isDragging ? classNameDragging : classNameNotDragging}
-    {...attributes}
-    {...listeners}
-  />);
+    return (<Row
+        ref={setNodeRef}
+        task={task}
+        columns={columns}
+        style={style}
+        className={isDragging ? classNameDragging : classNameNotDragging}
+        {...attributes}
+        {...listeners}
+    />);
 }
 
-const Table = ({ controller }: { controller: TaskController }) => {
-  const columns = useColumns();
-  const [activeId, setActiveId] = React.useState(null);
-  const tasks = useWatchObserver(controller.tasks);
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 75, tolerance: 10 } }));
+const Table = ({controller}: { controller: TaskController }) => {
+    const columns = useColumns();
+    const [activeId, setActiveId] = React.useState(null);
+    const tasks = useWatchObserver(controller.tasks);
+    const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {delay: 75, tolerance: 10}}));
 
-  function handleDragEnd(event: { active: any; over: any; }) {
-    const { active, over } = event;
+    function handleDragEnd(event: { active: any; over: any; }) {
+        const {active, over} = event;
 
-    if (active.id !== over.id) {
-      const oldIndex = tasks.findIndex(task => task.id === active.id);
-      const newIndex = tasks.findIndex(task => task.id === over.id);
+        if (active.id !== over.id) {
+            const oldIndex = tasks.findIndex(task => task.id === active.id);
+            const newIndex = tasks.findIndex(task => task.id === over.id);
 
-      controller.tasks.updateValue(arrayMove(tasks, oldIndex, newIndex));
+            controller.tasks.updateValue(arrayMove(tasks, oldIndex, newIndex));
+        }
+        setActiveId(null);
     }
-    setActiveId(null);
-  }
 
-  function handleDragStart(event: { active: any; }) {
-    const { active } = event;
-    setActiveId(active.id);
-  }
+    function handleDragStart(event: { active: any; }) {
+        const {active} = event;
+        setActiveId(active.id);
+    }
 
-  return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <table className="table-auto bg-slate-300">
-        <Headers />
-        <tbody>
-          <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
-            {tasks.map(task => <DraggableRow key={task.id} task={task} />)}
-          </SortableContext>
-        </tbody>
-      </table>
-      <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activeId ? <Row className="bg-slate-300 shadow-outer" task={tasks.find(task => task.id === activeId)} columns={columns} /> : null}
-      </DragOverlay>
-    </DndContext>
-  )
+    return (
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+        >
+            <table className="table-auto bg-slate-300">
+                <Headers/>
+                <tbody>
+                <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+                    {tasks.map(task => <DraggableRow key={task.id} task={task}/>)}
+                </SortableContext>
+                </tbody>
+            </table>
+            <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
+                {activeId ? <Row className="bg-slate-300 shadow-lg" task={tasks.find(task => task.id === activeId)}
+                                 columns={columns}/> : null}
+            </DragOverlay>
+        </DndContext>
+    )
 }
 
 const App = (props: { controller: TaskController }) => {
-  const columnController = new ColumnController(DEFAULT_COLUMNS);
-  return (<>
-    <div className="w-full flex justify-center">
-      <ColumnProvider controller={columnController}>
-        <Table controller={props.controller} />
-      </ColumnProvider>
-    </div>
-  </>)
-};
-
-ReactDOM.render(<App controller={window.taskController} />, document.getElementById('root'));
+    const columnController = new ColumnController(DEFAULT_COLUMNS);
+    return (<>
+        <div className="w-full flex justify-center">
+            <ColumnProvider controller={columnController}>
+                <Table controller={props.controller}/>
+            </ColumnProvider>
+        </div>
+    </>)
+}; ReactDOM.render(<App controller={window.taskController}/>, document.getElementById('root'));

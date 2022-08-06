@@ -31,7 +31,7 @@ const Table = ({controller}: { controller: TaskController }) => {
     const columns = useColumns();
     const [activeId, setActiveId] = React.useState(null);
     const tasks = useWatchObserver(controller.tasks);
-    const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {delay: 75, tolerance: 10}}));
+    const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {delay: 100, tolerance: 10}}));
 
     function handleDragEnd(event: { active: any; over: any; }) {
         const {active, over} = event;

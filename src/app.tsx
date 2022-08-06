@@ -1,17 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import { useWatchObserver } from "tools/observer";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider } from "components/column-provider";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { DraggableRow, Row } from "./components/row";
+import { DraggableRow } from "./components/row";
 import { useColumns } from "./hooks";
-import { Task, UniqueIdType } from "models/task";
-import { TaskControllerProvider, useTaskController } from "components/task-controller-provider";
+import { TaskControllerProvider } from "components/task-controller-provider";
+import { DraggedTaskOverlay } from "./components/dragged-task-overlay";
 
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
@@ -79,13 +78,3 @@ const App = (props: { controller: TaskController }) => {
         </div>
     </>)
 }; ReactDOM.render(<App controller={new TaskController()} />, document.getElementById('root'));
-
-function DraggedTaskOverlay({ }): JSX.Element {
-    const columns = useColumns();
-    const taskController = useTaskController();
-    const activelyDraggedTask = useWatchObserver(taskController.taskBeingReordered);
-
-    return <DragOverlay modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
-        {activelyDraggedTask ? <Row className="bg-slate-300 shadow-lg" task={activelyDraggedTask} columns={columns} /> : null}
-    </DragOverlay>;
-}

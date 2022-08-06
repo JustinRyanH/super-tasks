@@ -1,16 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
 
 import { useWatchObserver } from "tools/observer";
-import { Task } from "models/task";
 import { TaskController } from "controllers/task-controller";
 import { Column, ColumnController, DEFAULT_COLUMNS } from "controllers/column-controller";
 import { ColumnProvider, useColumnContext } from "components/column-provider";
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { Row } from "./components/row";
+import { DraggableRow, Row } from "./components/row";
 
 function useColumns() {
     const columnController = useColumnContext();
@@ -27,41 +25,6 @@ const Headers = () => {
         {columns.map(column => <ColumnCell key={column.id} column={column}/>)}
     </tr>
     </thead>);
-}
-
-const DraggableRow = (props: { task: Task }) => {
-    const task = props.task;
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        index,
-        isDragging,
-    } = useSortable({id: task.id});
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        '--index': index,
-    };
-
-    const columnController = useColumnContext();
-    const columns = useWatchObserver(columnController.columns);
-
-    const classNameNotDragging = "odd:bg-slate-300 even:bg-slate-200 shadow-inner";
-    const classNameDragging = "bg-slate-100 text-slate-200"
-
-    return (<Row
-        ref={setNodeRef}
-        task={task}
-        columns={columns}
-        style={style}
-        className={isDragging ? classNameDragging : classNameNotDragging}
-        {...attributes}
-        {...listeners}
-    />);
 }
 
 const Table = ({controller}: { controller: TaskController }) => {

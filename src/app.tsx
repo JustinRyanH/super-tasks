@@ -10,7 +10,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { DraggableRow, Row } from "./components/row";
 import { useColumns } from "./hooks";
-import { Task } from "models/task";
+import { Task, UniqueIdType } from "models/task";
 
 const ColumnCell = ({ column }: { column: Column }) => <td className="p-2">{column.name}</td>
 
@@ -26,7 +26,7 @@ const Headers = () => {
 
 const Table = ({ controller }: { controller: TaskController }) => {
     const columns = useColumns();
-    const [activeId, setActiveId] = React.useState(null);
+    const activeTask = useWatchObserver(controller.activeTask);
     const tasks = useWatchObserver(controller.tasks);
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 100, tolerance: 10 } }));
 
@@ -39,12 +39,12 @@ const Table = ({ controller }: { controller: TaskController }) => {
 
             controller.tasks.updateValue(arrayMove(tasks, oldIndex, newIndex));
         }
-        setActiveId(null);
+        controller.clearActiveTask();
     }
 
     function handleDragStart(event: { active: any; }) {
         const { active } = event;
-        setActiveId(active.id);
+        controller.setActiveTask(active.id);
     }
 
     return (
@@ -62,7 +62,7 @@ const Table = ({ controller }: { controller: TaskController }) => {
                     </SortableContext>
                 </tbody>
             </table>
-            <TaskOverload activeId={activeId} tasks={tasks} columns={columns} />
+            <TaskOverload activeId={activeTask?.id} tasks={tasks} columns={columns} />
         </DndContext>
     )
 }
@@ -79,7 +79,7 @@ const App = (props: { controller: TaskController }) => {
 }; ReactDOM.render(<App controller={new TaskController()} />, document.getElementById('root'));
 
 interface TaskOverloadProps {
-    activeId: null;
+    activeId?: UniqueIdType;
     tasks: Task[];
     columns: Column[];
 }

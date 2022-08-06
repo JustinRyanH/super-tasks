@@ -5,8 +5,10 @@ interface TaskProps {
   assignees: string[],
 }
 
+export type UniqueIdType = string;
+
 export class Task {
-  readonly id: string;
+  readonly id: UniqueIdType;
   #title: SingleValueObserver<string>;
   #assignees: SingleValueObserver<string[]>;
 
